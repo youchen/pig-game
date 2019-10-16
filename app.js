@@ -11,16 +11,12 @@ GAME RULES:
 
 // Game start state
 // Player Score
-var player1Score = document.querySelector('#score-0');
-var player2Score = document.querySelector('#score-1');
-var playerScores = [player1Score, player2Score];
+var playerScores = [document.querySelector('#score-0'), document.querySelector('#score-1')];
 playerScores[0].textContent = 0;
 playerScores[1].textContent = 0;
 
 // Player Current Score
-var player1CurScore = document.querySelector('#current-0');
-var player2CurScore = document.querySelector('#current-1');
-var playerCurScores = [player1CurScore, player2CurScore];
+var playerCurScores = [document.querySelector('#current-0'), document.querySelector('#current-1')];
 playerCurScores[0].textContent = 0;
 playerCurScores[1].textContent = 0;
 
