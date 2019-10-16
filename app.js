@@ -9,27 +9,43 @@ GAME RULES:
 
 */
 
-// Game start state
-// Player Score
-var playerScores = [document.getElementById('score-0'), document.getElementById('score-1')];
-playerScores[0].textContent = 0;
-playerScores[1].textContent = 0;
+var playerScores, scores, playerCurScores, dice, activePlayer, roundScore;
 
-var scores = [0, 0];
+function clearBoard() {
+    // Game start state
+    // Player Score
+    playerScores = [document.getElementById('score-0'), document.getElementById('score-1')];
+    playerScores[0].textContent = 0;
+    playerScores[1].textContent = 0;
 
-// Player Current Score
-var playerCurScores = [document.getElementById('current-0'), document.getElementById('current-1')];
-playerCurScores[0].textContent = 0;
-playerCurScores[1].textContent = 0;
+    scores = [0, 0];
 
-// Dice
-var dice = document.querySelector('.dice');
-dice.style.display = 'none';
+    // Player Current Score
+    playerCurScores = [document.getElementById('current-0'), document.getElementById('current-1')];
+    playerCurScores[0].textContent = 0;
+    playerCurScores[1].textContent = 0;
 
-// Active player
-var activePlayer = 0, roundScore = 0;
+    // Dice
+    dice = document.querySelector('.dice');
+    dice.style.display = 'none';
 
+    // Active player
+    activePlayer = 0;
+    roundScore = 0;
+}
+
+clearBoard();
+
+// Button: Roll dice
 document.querySelector('.btn-roll').addEventListener('click', function(){
+    if (document.getElementById('name-0').textContent === 'WINNER!!' || 
+        document.getElementById('name-1').textContent === 'WINNER!!'
+    ){
+        document.getElementById('name-0').textContent = 'PLAYER 1';
+        document.getElementById('name-1').textContent = 'PLAYER 2';
+        clearBoard();
+    }
+
     var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
 
     dice.style.display = 'block';
@@ -40,6 +56,11 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
     if (diceNum !== 1){
         roundScore += diceNum;
         playerCurScores[activePlayer].textContent = roundScore;
+        
+        if (roundScore + scores[activePlayer] >= 20) {
+            playerScores[activePlayer].textContent = roundScore + scores[activePlayer];
+            document.getElementById('name-' + activePlayer).textContent = 'WINNER!!';
+        }
     } else {
         nextPlayer();
     }
@@ -55,6 +76,7 @@ function nextPlayer() {
 
 }
 
+// Button: Hold
 document.querySelector('.btn-hold').addEventListener('click', function() {
     scores[activePlayer] += roundScore;
     playerScores[activePlayer].textContent = scores[activePlayer];
