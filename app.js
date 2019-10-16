@@ -24,9 +24,28 @@ playerCurScores[1].textContent = 0;
 var dice = document.querySelector('.dice');
 dice.style.display = 'none';
 
+// Active player
+var activePlayer = 0, roundScore = 0;
+
 document.querySelector('.btn-roll').addEventListener('click', function(){
+    var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
+
     dice.style.display = 'block';
-    dice.src = './dice-' + (Math.floor(Math.random() * 10 % 6) + 1) + '.png';
+    dice.src = './dice-' + diceNum + '.png';
+
+    // if not 1, continue, add the score to current socre
+    // if it's one, alternate the player, clear the score
+    if (diceNum !== 1){
+        roundScore += diceNum;
+        playerCurScores[activePlayer].textContent = roundScore;
+    } else {
+        roundScore = 0;
+        playerCurScores[activePlayer].textContent = 0;
+
+        activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
+        document.querySelector('.player-0-panel').classList.toggle('active');
+        document.querySelector('.player-1-panel').classList.toggle('active');
+    }
 });
 
 
