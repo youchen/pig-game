@@ -11,20 +11,35 @@ GAME RULES:
 
 // Game start state
 // Player Score
-var playerScores = [document.querySelector('#score-0'), document.querySelector('#score-1')];
+var playerScores = [document.getElementById('score-0'), document.getElementById('score-1')];
 playerScores[0].textContent = 0;
 playerScores[1].textContent = 0;
 
 // Player Current Score
-var playerCurScores = [document.querySelector('#current-0'), document.querySelector('#current-1')];
+var playerCurScores = [document.getElementById('current-0'), document.getElementById('current-1')];
 playerCurScores[0].textContent = 0;
 playerCurScores[1].textContent = 0;
 
 // Dice
-var dice = document.querySelector('.dice').style.display = 'none';
+var dice = document.querySelector('.dice');
+dice.style.display = 'none';
 
-var scoreCandidate, dice;
-scoreCandidate = 0;
-dice = Math.floor(Math.random() * 10 % 6) + 1;
+document.querySelector('.btn-roll').addEventListener('click', function(){
+    dice.style.display = 'block';
+    dice.src = './dice-' + (Math.floor(Math.random() * 10 % 6) + 1) + '.png';
+});
 
-document.querySelector('current-0')
+
+
+
+
+
+
+
+
+
+// var scoreCandidate, dice;
+// scoreCandidate = 0;
+// dice = Math.floor(Math.random() * 10 % 6) + 1;
+
+// document.querySelector('current-0')
