@@ -15,6 +15,8 @@ var playerScores = [document.getElementById('score-0'), document.getElementById(
 playerScores[0].textContent = 0;
 playerScores[1].textContent = 0;
 
+var scores = [0, 0];
+
 // Player Current Score
 var playerCurScores = [document.getElementById('current-0'), document.getElementById('current-1')];
 playerCurScores[0].textContent = 0;
@@ -39,16 +41,27 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
         roundScore += diceNum;
         playerCurScores[activePlayer].textContent = roundScore;
     } else {
-        roundScore = 0;
-        playerCurScores[activePlayer].textContent = 0;
-
-        activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
-        document.querySelector('.player-0-panel').classList.toggle('active');
-        document.querySelector('.player-1-panel').classList.toggle('active');
+        nextPlayer();
     }
 });
 
+function nextPlayer() {
+    roundScore = 0;
+    playerCurScores[activePlayer].textContent = 0;
 
+    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
+    document.querySelector('.player-0-panel').classList.toggle('active');
+    document.querySelector('.player-1-panel').classList.toggle('active');
+
+}
+
+document.querySelector('.btn-hold').addEventListener('click', function() {
+    scores[activePlayer] += roundScore;
+    playerScores[activePlayer].textContent = scores[activePlayer];
+    
+    dice.style.display = 'none';
+    nextPlayer();
+})
 
 
 
