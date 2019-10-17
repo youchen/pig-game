@@ -11,7 +11,7 @@ GAME RULES:
 var playerScores, scores, playerCurScores, dice, activePlayer, roundScore, winnerScore;
 var buttonRollDice, buttonHold, buttonNewGame;
 
-winnerScore = 10;
+winnerScore = 100;
 
 // Buttons
 buttonNewGame = document.querySelector('.btn-new');
