@@ -1,17 +1,10 @@
-/*
-GAME RULES:
-
-- The game has 2 players, playing in rounds
-- In each turn, a player rolls a dice as many times as he whishes. Each result get added to his ROUND score
-- BUT, if the player rolls a 1, all his ROUND score gets lost. After that, it's the next player's turn
-- The player can choose to 'Hold', which means that his ROUND score gets added to his GLBAL score. After that, it's the next player's turn
-- The first player to reach 100 points on GLOBAL score wins the game
-
-*/
-var playerScores, scores, playerCurScores, dice, activePlayer, roundScore, winnerScore;
+// TODO: make a object for players.
+var playerScoreElements, playerRoundScoreElements, playerNameElements, playerPanelElements;
+var playerScores, diceAccuScore, goal;
+var dice, lastDiceNum, activePlayer;
 var buttonRollDice, buttonHold, buttonNewGame;
 
-winnerScore = 100;
+// goal = -1;
 
 // Buttons
 buttonNewGame = document.querySelector('.btn-new');
@@ -20,22 +13,38 @@ buttonHold = document.querySelector('.btn-hold');
 
 buttonNewGame.addEventListener('click', init);
 
+// Player Name
+playerNameElements = [document.getElementById('name-0'), document.getElementById('name-1')];
+
+// Player Score
+playerScoreElements = [document.getElementById('score-0'), document.getElementById('score-1')];
+
+// Player Round Score
+playerRoundScoreElements = [document.getElementById('current-0'), document.getElementById('current-1')];
+
+// Player Panel
+playerPanelElements = [document.querySelector('.player-0-panel'), document.querySelector('.player-1-panel')];
+
 function init() {
+    // Ask for goal
+    goal = undefined;
+    while (!Number.isInteger(goal) || goal <= 0) {
+        goal = parseInt(prompt("Please set the winning score:", "100"));
+    }
+
     // Player Text
-    document.getElementById('name-0').textContent = 'PLAYER 1';
-    document.getElementById('name-1').textContent = 'PLAYER 2';
+    playerNameElements[0].textContent = 'PLAYER 1';
+    playerNameElements[1].textContent = 'PLAYER 2';
 
     // Player Score
-    playerScores = [document.getElementById('score-0'), document.getElementById('score-1')];
-    playerScores[0].textContent = 0;
-    playerScores[1].textContent = 0;
+    playerScoreElements[0].textContent = 0;
+    playerScoreElements[1].textContent = 0;
 
-    scores = [0, 0];
+    playerScores = [0, 0];
 
     // Player Current Score
-    playerCurScores = [document.getElementById('current-0'), document.getElementById('current-1')];
-    playerCurScores[0].textContent = 0;
-    playerCurScores[1].textContent = 0;
+    playerRoundScoreElements[0].textContent = 0;
+    playerRoundScoreElements[1].textContent = 0;
 
     // Dice
     dice = document.querySelector('.dice');
@@ -43,9 +52,10 @@ function init() {
 
     // Active player
     activePlayer = 0;
-    document.querySelector('.player-0-panel').classList.add('active');
-    document.querySelector('.player-1-panel').classList.remove('active');
-    roundScore = 0;
+    playerPanelElements[0].classList.add('active');
+    playerPanelElements[1].classList.remove('active');
+
+    diceAccuScore = 0;
 
     // Roll dice & Hold button
     buttonHold.style.display = 'block';
@@ -55,17 +65,9 @@ function init() {
 init();
 
 // Button: Roll dice
-
 buttonRollDice.addEventListener('click', function(){
-    if (document.getElementById('name-0').textContent === 'WINNER!!' || 
-        document.getElementById('name-1').textContent === 'WINNER!!'
-    ){
-        document.getElementById('name-0').textContent = 'PLAYER 1';
-        document.getElementById('name-1').textContent = 'PLAYER 2';
-        init();
-    }
-
-    var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
+    // var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
+    var diceNum = 6;
 
     dice.style.display = 'block';
     dice.src = './dice-' + diceNum + '.png';
@@ -73,11 +75,21 @@ buttonRollDice.addEventListener('click', function(){
     // if not 1, continue, add the score to current socre
     // if it's one, alternate the player, clear the score
     if (diceNum !== 1){
-        roundScore += diceNum;
-        playerCurScores[activePlayer].textContent = roundScore;
+        if (lastDiceNum === 6 && diceNum === 6) {
+            playerScores[activePlayer] = 0;
+            playerScoreElements[activePlayer].textContent = 0;
+            playerRoundScoreElements[activePlayer].textContent = 0;
+            diceAccuScore = 0;
+    
+            nextPlayer();
+            dice.style.display = 'none';
+            return;
+        } 
+        diceAccuScore += diceNum;
+        playerRoundScoreElements[activePlayer].textContent = diceAccuScore;
         
-        if (roundScore + scores[activePlayer] >= winnerScore) {
-            playerScores[activePlayer].textContent = roundScore + scores[activePlayer];
+        if (diceAccuScore + playerScores[activePlayer] >= goal) {
+            playerScoreElements[activePlayer].textContent = diceAccuScore + playerScores[activePlayer];
             document.getElementById('name-' + activePlayer).textContent = 'WINNER!!';
 
             // hide roll-dice and hold button
@@ -90,24 +102,27 @@ buttonRollDice.addEventListener('click', function(){
     } else {
         nextPlayer();
     }
+    lastDiceNum = diceNum;
+    console.log("last: " + lastDiceNum);
+    console.log("curr: " + diceNum);
 });
 
 function nextPlayer() {
-    roundScore = 0;
-    playerCurScores[activePlayer].textContent = 0;
+    lastDiceNum = undefined;
+
+    diceAccuScore = 0;
+    playerRoundScoreElements[activePlayer].textContent = 0;
 
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
-
 }
 
 // Button: Hold
 buttonHold.addEventListener('click', function() {
-    scores[activePlayer] += roundScore;
-    playerScores[activePlayer].textContent = scores[activePlayer];
+    playerScores[activePlayer] += diceAccuScore;
+    playerScoreElements[activePlayer].textContent = playerScores[activePlayer];
     
     dice.style.display = 'none';
     nextPlayer();
 })
-
