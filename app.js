@@ -7,12 +7,13 @@ GAME RULES:
 - The player can choose to 'Hold', which means that his ROUND score gets added to his GLBAL score. After that, it's the next player's turn
 - The first player to reach 100 points on GLOBAL score wins the game
 */
+// TODO: make a object for players.
 var playerScoreElements, playerRoundScoreElements, playerNameElements, playerPanelElements;
 var playerScores, diceAccuScore, goal;
-var dice, activePlayer;
+var dice, lastDiceNum, activePlayer;
 var buttonRollDice, buttonHold, buttonNewGame;
 
-goal = 20;
+// goal = -1;
 
 // Buttons
 buttonNewGame = document.querySelector('.btn-new');
@@ -34,6 +35,12 @@ playerRoundScoreElements = [document.getElementById('current-0'), document.getEl
 playerPanelElements = [document.querySelector('.player-0-panel'), document.querySelector('.player-1-panel')];
 
 function init() {
+    // Ask for goal
+    goal = undefined;
+    while (!Number.isInteger(goal) || goal <= 0) {
+        goal = parseInt(prompt("Please set the winning score:", "100"));
+    }
+
     // Player Text
     playerNameElements[0].textContent = 'PLAYER 1';
     playerNameElements[1].textContent = 'PLAYER 2';
@@ -68,7 +75,8 @@ init();
 
 // Button: Roll dice
 buttonRollDice.addEventListener('click', function(){
-    var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
+    // var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
+    var diceNum = 6;
 
     dice.style.display = 'block';
     dice.src = './dice-' + diceNum + '.png';
@@ -76,6 +84,16 @@ buttonRollDice.addEventListener('click', function(){
     // if not 1, continue, add the score to current socre
     // if it's one, alternate the player, clear the score
     if (diceNum !== 1){
+        if (lastDiceNum === 6 && diceNum === 6) {
+            playerScores[activePlayer] = 0;
+            playerScoreElements[activePlayer].textContent = 0;
+            playerRoundScoreElements[activePlayer].textContent = 0;
+            diceAccuScore = 0;
+    
+            nextPlayer();
+            dice.style.display = 'none';
+            return;
+        } 
         diceAccuScore += diceNum;
         playerRoundScoreElements[activePlayer].textContent = diceAccuScore;
         
@@ -93,16 +111,20 @@ buttonRollDice.addEventListener('click', function(){
     } else {
         nextPlayer();
     }
+    lastDiceNum = diceNum;
+    console.log("last: " + lastDiceNum);
+    console.log("curr: " + diceNum);
 });
 
 function nextPlayer() {
+    lastDiceNum = undefined;
+
     diceAccuScore = 0;
     playerRoundScoreElements[activePlayer].textContent = 0;
 
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
-
 }
 
 // Button: Hold
