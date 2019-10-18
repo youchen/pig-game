@@ -4,8 +4,6 @@ var playerScores, diceAccuScore, goal;
 var dice, lastDiceNum, activePlayer;
 var buttonRollDice, buttonHold, buttonNewGame;
 
-// goal = -1;
-
 // Buttons
 buttonNewGame = document.querySelector('.btn-new');
 buttonRollDice = document.querySelector('.btn-roll');
@@ -71,8 +69,6 @@ buttonRollDice.addEventListener('click', function(){
     dice.style.display = 'block';
     dice.src = './dice-' + diceNum + '.png';
 
-    // if not 1, continue, add the score to current socre
-    // if it's one, alternate the player, clear the score
     if (diceNum !== 1){
         if (lastDiceNum === 6 && diceNum === 6) {
             playerScores[activePlayer] = 0;
@@ -94,16 +90,11 @@ buttonRollDice.addEventListener('click', function(){
             // hide roll-dice and hold button
             buttonHold.style.display = 'none';
             buttonRollDice.style.display = 'none';
-
-            // remove the Active Dot
-            // document.querySelector('.player-' + activePlayer + '-panel').classList.toggle('active');
         }
     } else {
         nextPlayer();
     }
     lastDiceNum = diceNum;
-    console.log("last: " + lastDiceNum);
-    console.log("curr: " + diceNum);
 });
 
 function nextPlayer() {
