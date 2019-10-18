@@ -66,8 +66,7 @@ init();
 
 // Button: Roll dice
 buttonRollDice.addEventListener('click', function(){
-    // var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
-    var diceNum = 6;
+    var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
 
     dice.style.display = 'block';
     dice.src = './dice-' + diceNum + '.png';
