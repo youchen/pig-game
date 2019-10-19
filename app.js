@@ -9,7 +9,7 @@ buttonNewGame = document.querySelector('.btn-new');
 buttonRollDice = document.querySelector('.btn-roll');
 buttonHold = document.querySelector('.btn-hold');
 
-buttonNewGame.addEventListener('click', init);
+buttonNewGame.addEventListener('click', newGame);
 
 // Player Name
 playerNameElements = [document.getElementById('name-0'), document.getElementById('name-1')];
@@ -23,13 +23,23 @@ playerRoundScoreElements = [document.getElementById('current-0'), document.getEl
 // Player Panel
 playerPanelElements = [document.querySelector('.player-0-panel'), document.querySelector('.player-1-panel')];
 
-function init() {
+function newGame() {
     // Ask for goal
     goal = undefined;
     while (!Number.isInteger(goal) || goal <= 0) {
         goal = parseInt(prompt("Please set the winning score:", "100"));
     }
+    pageInit();
 
+    // Roll dice & Hold button
+    buttonHold.style.display = 'block';
+    buttonRollDice.style.display = 'block';
+}
+
+function pageInit(){
+    // render all text field
+
+    // hide 2 buttons below, only show newGame button. 
     // Player Text
     playerNameElements[0].textContent = 'PLAYER 1';
     playerNameElements[1].textContent = 'PLAYER 2';
@@ -56,11 +66,11 @@ function init() {
     diceAccuScore = 0;
 
     // Roll dice & Hold button
-    buttonHold.style.display = 'block';
-    buttonRollDice.style.display = 'block';
+    buttonHold.style.display = 'none';
+    buttonRollDice.style.display = 'none';
 }
 
-init();
+pageInit();
 
 // Button: Roll dice
 buttonRollDice.addEventListener('click', function(){
