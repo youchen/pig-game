@@ -1,37 +1,47 @@
 // TODO: make a object for players.
 var playerScoreElements, playerRoundScoreElements, playerNameElements, playerPanelElements;
 var playerScores, diceAccuScore, goal;
-var dice, lastDiceNum, activePlayer;
-var buttonRollDice, buttonHold, buttonNewGame;
+var dice1, dice2, lastDiceNum, activePlayer;
+var buttonNewGame, buttonRoll, buttonHold;
+var infoBox;
 
-// goal = -1;
-
-// Buttons
-buttonNewGame = document.querySelector('.btn-new');
-buttonRollDice = document.querySelector('.btn-roll');
-buttonHold = document.querySelector('.btn-hold');
-
-buttonNewGame.addEventListener('click', init);
-
-// Player Name
-playerNameElements = [document.getElementById('name-0'), document.getElementById('name-1')];
 
 // Player Score
 playerScoreElements = [document.getElementById('score-0'), document.getElementById('score-1')];
-
 // Player Round Score
 playerRoundScoreElements = [document.getElementById('current-0'), document.getElementById('current-1')];
-
+// Player Name
+playerNameElements = [document.getElementById('name-0'), document.getElementById('name-1')];
 // Player Panel
 playerPanelElements = [document.querySelector('.player-0-panel'), document.querySelector('.player-1-panel')];
 
-function init() {
+// Buttons
+buttonNewGame = document.querySelector('.btn-new');
+buttonRoll = document.querySelector('.btn-roll');
+buttonHold = document.querySelector('.btn-hold');
+
+//infoBox
+infoBox = document.getElementById("info-box");
+
+
+
+function newGame() {
     // Ask for goal
     goal = undefined;
     while (!Number.isInteger(goal) || goal <= 0) {
         goal = parseInt(prompt("Please set the winning score:", "100"));
     }
+    pageInit();
 
+    // Roll Dice & Hold button
+    buttonHold.style.display = 'block';
+    buttonRoll.style.display = 'block';
+}
+
+function pageInit(){
+    // render all text field
+
+    // hide 2 buttons below, only show newGame button. 
     // Player Text
     playerNameElements[0].textContent = 'PLAYER 1';
     playerNameElements[1].textContent = 'PLAYER 2';
@@ -47,8 +57,11 @@ function init() {
     playerRoundScoreElements[1].textContent = 0;
 
     // Dice
-    dice = document.querySelector('.dice');
-    dice.style.display = 'none';
+    dice1 = document.getElementById('dice1');
+    dice1.style.display = 'none';
+
+    dice2 = document.getElementById('dice2');
+    dice2.style.display = 'none';
 
     // Active player
     activePlayer = 0;
@@ -57,56 +70,32 @@ function init() {
 
     diceAccuScore = 0;
 
-    // Roll dice & Hold button
-    buttonHold.style.display = 'block';
-    buttonRollDice.style.display = 'block';
+    // Roll Dice & Hold button
+    buttonHold.style.display = 'none';
+    buttonRoll.style.display = 'none';
+
+    // info box
+    infoBox.style.display = 'none';
 }
 
-init();
-
-// Button: Roll dice
-buttonRollDice.addEventListener('click', function(){
-    var diceNum = (Math.floor(Math.random() * 10 % 6) + 1);
-
-    dice.style.display = 'block';
-    dice.src = './dice-' + diceNum + '.png';
-
-    // if not 1, continue, add the score to current socre
-    // if it's one, alternate the player, clear the score
-    if (diceNum !== 1){
-        if (lastDiceNum === 6 && diceNum === 6) {
-            playerScores[activePlayer] = 0;
-            playerScoreElements[activePlayer].textContent = 0;
-            playerRoundScoreElements[activePlayer].textContent = 0;
-            diceAccuScore = 0;
-    
-            nextPlayer();
-            dice.style.display = 'none';
-            return;
-        } 
-        diceAccuScore += diceNum;
-        playerRoundScoreElements[activePlayer].textContent = diceAccuScore;
-        
-        if (diceAccuScore + playerScores[activePlayer] >= goal) {
-            playerScoreElements[activePlayer].textContent = diceAccuScore + playerScores[activePlayer];
-            document.getElementById('name-' + activePlayer).textContent = 'WINNER!!';
-
-            // hide roll-dice and hold button
-            buttonHold.style.display = 'none';
-            buttonRollDice.style.display = 'none';
-
-            // remove the Active Dot
-            // document.querySelector('.player-' + activePlayer + '-panel').classList.toggle('active');
-        }
-    } else {
-        nextPlayer();
-    }
-    lastDiceNum = diceNum;
-    console.log("last: " + lastDiceNum);
-    console.log("curr: " + diceNum);
-});
+function getRandomDiceNum() {
+    return (Math.floor(Math.random() * 10 % 6) + 1);
+}
 
 function nextPlayer() {
+    infoBox.style.display = 'block';
+    buttonRoll.style.display = 'none';
+    buttonHold.style.display = 'none';
+
+    setTimeout(function() {
+        infoBox.style.display = 'none';
+        dice1.style.display = 'none';
+        dice2.style.display = 'none';
+
+        buttonRoll.style.display = 'block';
+        buttonHold.style.display = 'block';
+    }, 1000);
+
     lastDiceNum = undefined;
 
     diceAccuScore = 0;
@@ -117,11 +106,42 @@ function nextPlayer() {
     document.querySelector('.player-1-panel').classList.toggle('active');
 }
 
+pageInit();
+buttonNewGame.addEventListener('click', newGame);
+
+// Button: Roll Dice
+buttonRoll.addEventListener('click', function(){
+    dice1.style.display = 'block';
+    var dice1Num = getRandomDiceNum();
+    dice1.src = './dice-' + dice1Num + '.png';
+
+    dice2.style.display = 'block';
+    var dice2Num =  getRandomDiceNum();
+    dice2.src = './dice-' + dice2Num + '.png';
+
+    if (dice1Num !== 1 && dice2Num !== 1){
+        diceAccuScore += (dice1Num + dice2Num);
+        playerRoundScoreElements[activePlayer].textContent = diceAccuScore;
+        
+        if (diceAccuScore + playerScores[activePlayer] >= goal) {
+            playerScoreElements[activePlayer].textContent = diceAccuScore + playerScores[activePlayer];
+            document.getElementById('name-' + activePlayer).textContent = 'WINNER!!';
+
+            // hide roll-Dice and hold button
+            buttonHold.style.display = 'none';
+            buttonRoll.style.display = 'none';
+        }
+    } else {
+        nextPlayer();
+    }
+});
+
 // Button: Hold
 buttonHold.addEventListener('click', function() {
     playerScores[activePlayer] += diceAccuScore;
     playerScoreElements[activePlayer].textContent = playerScores[activePlayer];
     
-    dice.style.display = 'none';
+    dice1.style.display = 'none';
+    dice2.style.display = 'none';
     nextPlayer();
 })
