@@ -2,26 +2,28 @@
 var playerScoreElements, playerRoundScoreElements, playerNameElements, playerPanelElements;
 var playerScores, diceAccuScore, goal;
 var dice1, dice2, lastDiceNum, activePlayer;
-var buttonRoll, buttonHold, buttonNewGame;
+var buttonNewGame, buttonRoll, buttonHold;
+var infoBox;
+
+
+// Player Score
+playerScoreElements = [document.getElementById('score-0'), document.getElementById('score-1')];
+// Player Round Score
+playerRoundScoreElements = [document.getElementById('current-0'), document.getElementById('current-1')];
+// Player Name
+playerNameElements = [document.getElementById('name-0'), document.getElementById('name-1')];
+// Player Panel
+playerPanelElements = [document.querySelector('.player-0-panel'), document.querySelector('.player-1-panel')];
 
 // Buttons
 buttonNewGame = document.querySelector('.btn-new');
 buttonRoll = document.querySelector('.btn-roll');
 buttonHold = document.querySelector('.btn-hold');
 
-buttonNewGame.addEventListener('click', newGame);
+//infoBox
+infoBox = document.getElementById("info-box");
 
-// Player Name
-playerNameElements = [document.getElementById('name-0'), document.getElementById('name-1')];
 
-// Player Score
-playerScoreElements = [document.getElementById('score-0'), document.getElementById('score-1')];
-
-// Player Round Score
-playerRoundScoreElements = [document.getElementById('current-0'), document.getElementById('current-1')];
-
-// Player Panel
-playerPanelElements = [document.querySelector('.player-0-panel'), document.querySelector('.player-1-panel')];
 
 function newGame() {
     // Ask for goal
@@ -71,17 +73,44 @@ function pageInit(){
     // Roll Dice & Hold button
     buttonHold.style.display = 'none';
     buttonRoll.style.display = 'none';
-}
 
-pageInit();
+    // info box
+    infoBox.style.display = 'none';
+}
 
 function getRandomDiceNum() {
     return (Math.floor(Math.random() * 10 % 6) + 1);
 }
 
+function nextPlayer() {
+    infoBox.style.display = 'block';
+    buttonRoll.style.display = 'none';
+    buttonHold.style.display = 'none';
+
+    setTimeout(function() {
+        infoBox.style.display = 'none';
+        dice1.style.display = 'none';
+        dice2.style.display = 'none';
+
+        buttonRoll.style.display = 'block';
+        buttonHold.style.display = 'block';
+    }, 1000);
+
+    lastDiceNum = undefined;
+
+    diceAccuScore = 0;
+    playerRoundScoreElements[activePlayer].textContent = 0;
+
+    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
+    document.querySelector('.player-0-panel').classList.toggle('active');
+    document.querySelector('.player-1-panel').classList.toggle('active');
+}
+
+pageInit();
+buttonNewGame.addEventListener('click', newGame);
+
 // Button: Roll Dice
 buttonRoll.addEventListener('click', function(){
-
     dice1.style.display = 'block';
     var dice1Num = getRandomDiceNum();
     dice1.src = './dice-' + dice1Num + '.png';
@@ -91,17 +120,6 @@ buttonRoll.addEventListener('click', function(){
     dice2.src = './dice-' + dice2Num + '.png';
 
     if (dice1Num !== 1 && dice2Num !== 1){
-        // if (lastDiceNum === 6 && diceNum === 6) {
-        //     playerScores[activePlayer] = 0;
-        //     playerScoreElements[activePlayer].textContent = 0;
-        //     playerRoundScoreElements[activePlayer].textContent = 0;
-        //     diceAccuScore = 0;
-    
-        //     nextPlayer();
-        //     dice1.style.display = 'none';
-        //     dice2.style.display = 'none';
-        //     return;
-        // } 
         diceAccuScore += (dice1Num + dice2Num);
         playerRoundScoreElements[activePlayer].textContent = diceAccuScore;
         
@@ -116,19 +134,7 @@ buttonRoll.addEventListener('click', function(){
     } else {
         nextPlayer();
     }
-    // lastDiceNum = diceNum;
 });
-
-function nextPlayer() {
-    lastDiceNum = undefined;
-
-    diceAccuScore = 0;
-    playerRoundScoreElements[activePlayer].textContent = 0;
-
-    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
-    document.querySelector('.player-0-panel').classList.toggle('active');
-    document.querySelector('.player-1-panel').classList.toggle('active');
-}
 
 // Button: Hold
 buttonHold.addEventListener('click', function() {
