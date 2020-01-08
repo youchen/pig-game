@@ -144,11 +144,36 @@ i {
 .dice {
     position: absolute;
     left: 50%;
-    top: 178px;
     transform: translateX(-50%);
     height: 100px;
     box-shadow: 0px 10px 60px rgba(0, 0, 0, 0.10);
+    display: none;
+}
+
+#dice1 {
+    top: 125px;
+}
+
+#dice2 {
+    top: 260px;
 }
 
 .winner { background-color: #f7f7f7; }
 .winner .player-name { font-weight: 300; color: #EB4D4D; }
+
+#info-box {
+    position: absolute;
+    top: 526px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    padding: 14px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+
+    text-align: center;
+    font-family: Lato;
+    font-size: 30px;
+
+    display: none;
+}
